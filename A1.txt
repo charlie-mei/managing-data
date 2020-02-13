@@ -1,0 +1,23 @@
+Q1. Find the names of all suppliers who supply a green part.
+
+SELECT DISTINCT sname
+FROM Suppliers AS S, Parts AS P, Catalog AS C
+WHERE P.color = 'green' AND S.sid = C.sid AND P.pid = C.pid;
+
+Q2. Find the names of all suppliers who are from Illinois.
+
+SELECT DISTINCT sname
+FROM Suppliers
+WHERE address LIKE '%Illinois%';
+
+Q3. Find the names of all suppliers who sell a red part costing less than $100.
+
+SELECT DISTINCT sname
+FROM Suppliers AS S, Parts AS P, Catalog AS C
+WHERE C.cost < 100 AND P.color = 'red' AND S.sid = C.sid AND P.pid = C.pid;
+
+Q4. Find the names and colors of all parts that are green or red.
+
+SELECT pname, color
+FROM Parts
+WHERE color IN ('green, 'red');
