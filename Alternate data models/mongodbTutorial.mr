@@ -1,0 +1,23 @@
+/* Mongo tutorial */
+
+/* Creating a namespace/database by just using use command */
+use tutorial
+
+/* Insert a collection called students. A collection is like a table. */
+db.students.insert({name: "John Doe"})
+db.students.insert({name: "Jane Doe", age: 32})
+
+/* List all documents in collection students */
+db.students.find()
+db.students.find({age: "Jane Doe"})
+
+/* Can update documents */
+db.students.update({age: 32}, {$set: {birthyear: "1996"}})
+
+/* Can replace  a value birthyear since it is incorrect and in the wrong number format */
+db.students.update({birthyear: "1996"}, {birthyear: 1988})
+db.students.find()
+
+/* Let's delete John Doe's document from the students collection */
+db.students.remove({name: "John Doe"})
+/* db.students.drop() to drop the whole students collection */
