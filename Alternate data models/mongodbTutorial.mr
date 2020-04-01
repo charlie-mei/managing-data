@@ -1,4 +1,8 @@
 /* Mongo tutorial */
+/* Termninal requirements to launch mongoDB:
+1. Run docker
+2. docker exec -it mongodb bash command in cmd
+3. Then run mongo */
 
 /* Creating a namespace/database by just using use command */
 use tutorial
