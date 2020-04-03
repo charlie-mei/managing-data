@@ -1,0 +1,94 @@
+/* DATABSE DESIGN */
+/* The keyspace is called library, consisting of three column families: users, books and borrowed books. The key-values can be seen in the code below. */
+
+/* CODE TO CREATE DATABSE */
+
+DROP KEYSPACE library;
+CREATE KEYSPACE library WITH REPLICATION = {'class':'SimpleStrategy', 'replication_factor':3};
+USE library;
+
+/* CREATE USER COLUMN SPACE */
+CREATE TABLE user(
+    userid INT PRIMARY KEY,
+    name TEXT,
+    phone TEXT,
+    address TEXT,
+    uni TEXT
+);
+
+/* CREATE BOOKS COLUMN SPACE */
+CREATE TABLE books(
+    bookID INT,
+    title TEXT,
+    pri_author TEXT,
+    sec_author TEXT,
+    pub_date DATE,
+    pages INT,
+    publisher TEXT,
+    translator TEXT,
+    checked_date DATE,
+    topic TEXT,
+    PRIMARY KEY (topic, bookID)
+);
+
+/* CREATE BORROWED BOOKS COLUMN SPACE */
+CREATE TABLE borrowed(
+    bookID INT PRIMARY KEY,
+    title TEXT,
+    checked_date DATE,
+    topic TEXT,
+    userid INT,
+    user_name TEXT,
+    user_uni TEXT
+);
+
+/* CODE TO POPULATE DATABSE */
+
+/* INSERT VALUES INTO USER COLUMN FAMILY */
+INSERT INTO user (userid, name, phone, address, uni) 
+    VALUES (1, 'Adam Apple', '123-456-7890', '1 Allan St', 'Columbia University');
+INSERT INTO user (userid, name, phone, address, uni) 
+    VALUES (2, 'Ben Banana', '234-567-8901', '1 Book St', 'Columbia University');
+INSERT INTO user (userid, name, phone, address, uni) 
+    VALUES (3, 'Charlie Cookie', '345-678-9012', '1 Camden St', 'New York University');
+INSERT INTO user (userid, name, phone, address, uni) 
+    VALUES (4, 'Dennis Donuts', '456-789-0123', '1 Dave St', 'New York University');
+INSERT INTO user (userid, name, phone, address, uni)
+    VALUES (5, 'Evelyn Eggs', '567-889-01234', '1 Epping St', 'Fordham University');
+
+/* INSERT VALUES INTO BOOKS COLUMN FAMILY */
+INSERT INTO books (bookID, title, pri_author, sec_author, pub_date, pages, publisher, translator, topic)
+    VALUES (1, 'Introduction to Machine Learning', 'James A', 'James B.', '1990-01-01', 234, 'Penguin', 'Penguin Translator', 'Machine Learning');
+INSERT INTO books (bookID, title, pri_author, sec_author, pub_date, pages, publisher, translator, topic)
+    VALUES (2, 'Intermediate Machine Learning', 'James A', 'James B.', '1993-01-02', 1394, 'Penguin', 'Penguin Translator', 'Machine Learning');
+INSERT INTO books (bookID, title, pri_author, sec_author, pub_date, pages, publisher, translator, topic)
+    VALUES (3, 'Advanced Machine Learning', 'James A', 'James B.', '1995-01-03', 10002, 'Penguin', 'Penguin Translator', 'Machine Learning');
+INSERT INTO books (bookID, title, pri_author, sec_author, pub_date, pages, publisher, translator, topic)
+    VALUES (4, 'Midsummer Murders', 'Arthur Conan', 'Conan Bro', '2000-01-01', 128, 'Apple', 'Apple Translator', 'Fiction');
+INSERT INTO books (bookID, title, pri_author, sec_author, pub_date, pages, publisher, translator, topic)
+    VALUES (5, 'Introduction to Pyschology', 'Eve Taylor', 'James Taylor', '1990-01-01', 1500, 'Penguin', 'Penguin Translator', 'Pyschology');
+
+/* INSERT VALUES INTO BORROWED BOOKS COLUMN FAMILY */
+INSERT INTO borrowed (bookID, title, checked_date, topic, userid, user_name, user_uni)
+    VALUES (1, 'Introduction to Machine Learning', '2020-01-01', 'Machine Learning', 1, 'Adam Apple','Columbia University');
+INSERT INTO borrowed (bookID, title, checked_date, topic, userid, user_name, user_uni)
+    VALUES (2, 'Intermediate Machine Learning', '2020-01-21', 'Machine Learning', 1, 'Adam Apple','Columbia University');
+INSERT INTO borrowed (bookID, title, checked_date, topic, userid, user_name, user_uni)
+    VALUES (4, 'Midsummer Murders', '2020-03-01', 'Fiction', 3, 'Charlie Cookie','New York University');
+
+
+/* CODE FOR QUERIES */
+
+
+/* QUESTION 1 - Which books have been checked out since such and such date. */
+SELECT bookID AS checked_bookID, title, checked_date FROM borrowed;
+
+/* QUESTION 2 - Which users have checked out such and such book. */
+SELECT userid, user_name AS name, bookID AS checked_bookID FROM borrowed;
+
+/* QUESTION 3 - How many books does the library have on such and such topic. */
+SELECT topic, COUNT(topic) FROM books GROUP BY topic;
+
+/* QUESTION 4 - Which users from Columbia University have checked out books on Machine Learning between this date and that date. */
+SELECT user_uni AS university, userid, user_name AS name, checked_date, topic FROM borrowed
+    WHERE user_uni = 'Columbia University' AND topic = 'Machine Learning' AND checked_date > '2010-01-01' AND checked_date < '2020-12-31' ALLOW FILTERING;
