@@ -1,0 +1,155 @@
+/* Database design: Namespace is library, with two collections - one of users, one of the books in the library
+In the users collections, include name, phone, address and uni affiliation
+In the books collection, include title, primary and secondary author, publisher date, 
+number of pages, the publisher, translator, topic. 
+For books that have been checked out, include a checked flag along with
+additional information on: checked date, user who checked the book,
+including their university affiliation. */
+
+/* Create the namespace */
+use library
+
+/* Create the users collection with relevant documents */
+db.users.insert(
+    {
+        name: "Adam Apple",
+        phone: "123-456-7890", 
+        address: "1 Allan St",
+        uni: "Columbia University"
+    })
+
+db.users.insert(
+    {
+        name: "Ben Banana",
+        phone: "123-412-2234", 
+        address: "1 Book St",
+        uni: "Columbia University"
+    })
+
+db.users.insert(
+    {
+        name: "Charlie Cooke",
+        phone: "121-412-7293", 
+        address: "1 Carlisle St",
+        uni: "New York University"
+    })
+
+db.users.insert(
+    {
+        name: "Dennis Donuts",
+        phone: "372-234-9283", 
+        address: "1 Dave St",
+        uni: "New York University"
+    })
+
+db.users.insert(
+    {
+        name: "Eva Eggs",
+        phone: "293-384-98282", 
+        address: "1 Epping St",
+        uni: "Fordham University"
+    })
+
+
+/* Create the books collection with relevant documents */
+
+db.books.insert(
+    {
+        name: "Introduction to Machine Learning",
+        pauthor: "James A",
+        sauthor: "James B",
+        pubdate: "1990-01-01",
+        pages: 234,
+        publisher: "Penguin",
+        translator: "Penguin Translations",
+        topic: "Machine Learning",
+        checked: "Yes",
+        checkdate: "2020-01-01",
+        borrower: "Adam Apple",
+        borrower_uni: "Columbia University",
+        comments: ["This is a great book", "I learnt a lot", "I recommend!"]
+    })
+
+db.books.insert(
+    {
+        name: "Intermediate Machine Learning",
+        pauthor: "James A",
+        sauthor: "James B",
+        pubdate: "1994-01-02",
+        pages: 523,
+        publisher: "Penguin",
+        translator: "Penguin Translations",
+        topic: "Machine Learning",
+        checked: "Yes",
+        checkdate: "2020-01-01",
+        borrower: "Adam Apple",
+        borrower_uni: "Columbia University",
+        comments: ["This is also a great book", "I also learnt a lot", "I defs recommend!"]
+    })
+
+db.books.insert(
+    {
+        name: "Advanced Machine Learning",
+        pauthor: "James A",
+        sauthor: "James B",
+        pubdate: "1999-01-01",
+        pages: 1234,
+        publisher: "Penguin",
+        translator: "Penguin Translations",
+        topic: "Machine Learning",
+        checked: "No"
+    })
+
+db.books.insert(
+    {
+        name: "Midsummer Murders",
+        pauthor: "Arthur Conan",
+        sauthor: "Conan's Bro",
+        pubdate: "1974-01-01",
+        pages: 212,
+        publisher: "Apple",
+        translator: "Apple Translations",
+        topic: "Fiction",
+        checked: "Yes",
+        checkdate: "2020-03-01",
+        borrower: "Dennis Donuts",
+        borrower_uni: "New York University",
+        comments: ["This is an interesting read", "Great characters", "I rate 5/5"]
+    })
+
+db.books.insert(
+    {
+        name: "Intorduction to Psychology",
+        pauthor: "Eve Taylor",
+        sauthor: "James Taylor",
+        pubdate: "1234-12-31",
+        pages: 85,
+        publisher: "Penguin",
+        translator: "Penguin Translations",
+        topic: "Psychology",
+        checked: "No"
+    })
+
+
+/* CODE FOR QUERIES */
+
+// QUESTION 1 - Which books have been checked out since such and such date.
+db.books.find({checked: "Yes"}, {name: 1, checkdate: 1})
+
+// QUESTION 2 - Which users have checked out such and such book.
+db.books.find({checked: "Yes"}, {borrower: 1, name: 1})
+
+// QUESTION 3 - How many books does the library have on such and such topic.
+db.books.aggregate([
+    {
+        $bucket: {
+            groupBy: "$topic",
+            boundaries: ["Fiction", "Machine Learning", "Psychology", "Upper bound placeholder"],
+            default: "All others",
+            output: {count: {$sum: 1}}
+        }
+    }
+])
+
+// QUESTION 4 - Which users from Columbia University have checked out books on Machine Learning between this date and that date.
+db.books.find({checked: "Yes", borrower_uni: "Columbia University"}, {borrower: 1, checkdate: 1})
