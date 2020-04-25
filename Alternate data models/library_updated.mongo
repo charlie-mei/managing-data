@@ -1,11 +1,3 @@
-/* Database design: Namespace is library, with two collections - one of users, one of the books in the library
-In the users collections, include name, phone, address and uni affiliation
-In the books collection, include title, primary and secondary author, publisher date, 
-number of pages, the publisher, translator, topic. 
-For books that have been checked out, include a checked flag along with
-additional information on: checked date, user who checked the book,
-including their university affiliation. */
-
 /* Create the namespace */
 use library
 
